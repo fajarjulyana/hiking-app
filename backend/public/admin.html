@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin - Silent Hiking ID</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 p-4 sm:p-8 font-sans min-h-screen">
+  <div class="max-w-6xl mx-auto space-y-8">
+    
+    <!-- Header Admin -->
+    <div class="flex justify-between items-center border-b border-slate-700 pb-4">
+      <div>
+        <h1 class="text-2xl font-bold">Dashboard Pengelolaan Trip</h1>
+        <p class="text-sm text-slate-400">Silent Hiking Indonesia</p>
+      </div>
+      <button onclick="logout()" class="bg-rose-600 hover:bg-rose-500 px-4 py-2 rounded-lg text-sm font-medium">Logout</button>
+    </div>
+
+    <!-- Modul Pengaturan Rekening -->
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 mb-8 space-y-4">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-700 pb-3">
+        <h2 class="text-lg font-semibold text-emerald-400">Pengaturan Nomor Rekening Pembayaran</h2>
+        
+        <!-- Badge Info Rekening Aktif -->
+        <div class="bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2 text-xs text-slate-300 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Rekening Aktif Saat Ini: <strong id="currentBankDisplay" class="text-white font-mono">Memuat...</strong></span>
+        </div>
+      </div>
+
+      <form id="bankForm" onsubmit="saveBankSettings(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Nama Bank / e-Wallet</label>
+          <input type="text" id="bankName" required placeholder="Contoh: BCA / Mandiri / QRIS" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Nomor Rekening / HP</label>
+          <input type="text" id="bankNumber" required placeholder="Contoh: 1234567890" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Atas Nama (A/N)</label>
+          <input type="text" id="bankHolder" required placeholder="Contoh: Silent Hiking Indonesia" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div class="md:col-span-3 flex justify-end">
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2.5 rounded-lg text-sm transition-colors">
+            Simpan & Perbarui Rekening
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modul Form Tambah / Edit Trip -->
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold" id="formTitle">Tambah Trip Hiking Baru</h2>
+        <button id="btnResetForm" onclick="resetTripForm()" class="hidden text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-slate-300">
+          Batal Edit / Tambah Baru
+        </button>
+      </div>
+
+      <form id="tripForm" onsubmit="saveTrip(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="hidden" id="tripId" />
+
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Judul Trip / Batch</label>
+          <input type="text" id="tripTitle" required placeholder="Contoh: Silent Hiking Batch #5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Lokasi Tujuan Hiking</label>
+          <input type="text" id="tripLocation" required placeholder="Contoh: Hutan Pinus Rahong" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Titik Kumpul (Meeting Point)</label>
+          <input type="text" id="tripMeetingPoint" required placeholder="Contoh: Indomaret Point Dago / Basecamp A" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Tanggal Pelaksanaan</label>
+          <input type="date" id="tripDate" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Harga Tiket (Rp)</label>
+          <input type="number" id="tripPrice" required placeholder="150000" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Kuota Maksimal Peserta</label>
+          <input type="number" id="tripQuota" required placeholder="15" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Link Grup WhatsApp (Peserta Approved)</label>
+          <input type="url" id="tripWAGroup" placeholder="https://chat.whatsapp.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Unggah Thumbnail Trip (Gambar/Foto)</label>
+          <input type="file" id="tripThumbnail" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-300 bg-slate-900 border border-slate-700 rounded-lg p-2 file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500">
+          <p id="currentImageNotice" class="text-[10px] text-slate-400 mt-1 hidden"></p>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-xs text-slate-400 block mb-1">Deskripsi, Rute & Syarat Ketentuan</label>
+          <textarea id="tripDescription" rows="3" placeholder="Informasi rute, perlengkapan wajib, etika hening..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500"></textarea>
+        </div>
+
+        <div class="md:col-span-2 flex justify-end">
+          <button type="submit" id="btnSaveTrip" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-6 py-2.5 rounded-lg text-sm transition-all">
+            Simpan Trip Baru
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Kelola Daftar Trip & Tabel Peserta -->
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+      <h2 class="text-lg font-semibold mb-4">Daftar Peserta Per Trip</h2>
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div class="w-full sm:w-1/2">
+          <label class="text-xs text-slate-400 block mb-1">Pilih Trip Untuk Dikelola:</label>
+          <select id="tripSelect" onchange="onTripSelectChange()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-sm text-white">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="editSelectedTrip()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg text-xs font-medium">
+            Edit Detail Trip Ini
+          </button>
+          <button onclick="toggleTripStatus()" id="btnToggleActive" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-lg text-xs font-medium">
+            Buka/Tutup Pendaftaran
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabel Peserta -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm border-collapse min-w-[600px]">
+          <thead>
+            <tr class="border-b border-slate-700 text-slate-400">
+              <th class="p-3">Kode</th>
+              <th class="p-3">Nama Peserta</th>
+              <th class="p-3">WhatsApp</th>
+              <th class="p-3">Status</th>
+              <th class="p-3">Bukti Bayar</th>
+              <th class="p-3">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="bookingTableBody">
+            <!-- Data peserta dirender di sini -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin.includes('localhost')
+      ? 'http://localhost:4008/api'
+      : `${window.location.origin}/api`;
+    const token = localStorage.getItem('admin_token');
+    let allTrips = [];
+
+    if (!token) window.location.href = '/login';
+
+    // 1. LOAD DAN TAMPILKAN DATA REKENING AKTIF
+    async function loadBankSettings() {
+      try {
+        const res = await fetch(`${API_BASE}/settings/bank`);
+        const { success, data } = await res.json();
+        if (success && data) {
+          const bankName = data.bank_name || 'Belum diatur';
+          const accountNumber = data.account_number || '-';
+          const accountHolder = data.account_holder || '-';
+
+          // Tampilkan di Form Input
+          document.getElementById('bankName').value = data.bank_name || '';
+          document.getElementById('bankNumber').value = data.account_number || '';
+          document.getElementById('bankHolder').value = data.account_holder || '';
+
+          // Tampilkan di Badge "Rekening Aktif Saat Ini"
+          document.getElementById('currentBankDisplay').innerText = `${bankName} - ${accountNumber} a.n ${accountHolder}`;
+        }
+      } catch (err) { 
+        console.error('Gagal memuat data rekening:', err); 
+        document.getElementById('currentBankDisplay').innerText = 'Gagal memuat';
+      }
+    }
+
+    // 2. SIMPAN DATA REKENING BARU
+    async function saveBankSettings(event) {
+      event.preventDefault();
+      const payload = {
+        bank_name: document.getElementById('bankName').value,
+        account_number: document.getElementById('bankNumber').value,
+        account_holder: document.getElementById('bankHolder').value
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/settings/bank`, {
+          method: 'PUT',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+          },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        alert(result.message);
+        loadBankSettings(); // Refresh Tampilan Badge Rekening Aktif
+      } catch (err) { 
+        alert('Gagal menyimpan rekening.'); 
+      }
+    }
+
+    // 3. MEMUAT TRIP UNTUK ADMIN
+    async function loadTrips() {
+      try {
+        const res = await fetch(`${API_BASE}/admin/trips`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const { data } = await res.json();
+        allTrips = data || [];
+        
+        const select = document.getElementById('tripSelect');
+        if (allTrips.length > 0) {
+          select.innerHTML = allTrips.map(t => 
+            `<option value="${t.id}">${t.title} (${t.event_date}) - [${t.is_active ? 'AKTIF' : 'TUTUP'}]</option>`
+          ).join('');
+          onTripSelectChange();
+        } else {
+          select.innerHTML = '<option value="">Belum ada trip dibuat</option>';
+          document.getElementById('bookingTableBody').innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada trip. Buat trip baru di atas.</td></tr>';
+        }
+      } catch (err) {
+        console.error('Gagal memuat trip:', err);
+      }
+    }
+
+    function onTripSelectChange() {
+      const tripId = document.getElementById('tripSelect').value;
+      const selected = allTrips.find(t => t.id == tripId);
+      if (selected) {
+        document.getElementById('btnToggleActive').innerText = selected.is_active ? 'Tutup Pendaftaran' : 'Buka Pendaftaran';
+      }
+      loadBookings();
+    }
+
+    // Helper untuk mengubah format nomor HP (08xx / +628xx) menjadi 628xx
+    function formatWAString(phone) {
+      if (!phone) return '';
+      // Hapus semua karakter selain angka
+      let cleaned = phone.replace(/\D/g, '');
+      
+      // Jika diawali '0', ganti dengan '62'
+      if (cleaned.startsWith('0')) {
+        cleaned = '62' + cleaned.slice(1);
+      }
+      return cleaned;
+    }
+
+    // 4. MEMUAT PESERTA TRIP YANG DIPILIH (LENGKAP DENGAN DETAIL TRIP DI WA)
+    async function loadBookings() {
+      const tripId = document.getElementById('tripSelect').value;
+      if (!tripId) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/trips/${tripId}/bookings`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const { data } = await res.json();
+        
+        const tbody = document.getElementById('bookingTableBody');
+        if (data && data.length > 0) {
+          tbody.innerHTML = data.map(b => {
+            // Ambil data lengkap trip dari array allTrips
+            const selectedTrip = allTrips.find(t => t.id == tripId) || {};
+            
+            const tripTitle = selectedTrip.title || 'Silent Hiking';
+            const tripDate = selectedTrip.event_date || '-';
+            const tripLocation = selectedTrip.location || '-';
+            const tripMeetingPoint = selectedTrip.meeting_point || '-';
+            const waGroupLink = selectedTrip.wa_group_link || '-';
+
+            // Ambil nomor WA yang sudah diformat ke 62
+            const formattedPhone = formatWAString(b.whatsapp_number);
+
+            // Teks pesan otomatis WhatsApp
+            const waMessage = encodeURIComponent(
+              `Halo Kak *${b.full_name}*,\n\n` +
+              `Pendaftaran Silent Hiking Anda telah *DI-APPROVE*! \n\n` +
+              ` *Detail Perjalanan Anda:*\n` +
+              `• Kode Booking: *${b.booking_code}*\n` +
+              `• Trip / Batch: *${tripTitle}*\n` +
+              `• Tanggal: *${tripDate}*\n` +
+              `• Tujuan Hiking: *${tripLocation}*\n` +
+              `• Titik Kumpul (Mepo): *${tripMeetingPoint}*\n\n` +
+              `📲 Silakan bergabung ke grup peserta untuk informasi teknis & briefing melalui link berikut:\n` +
+              `${waGroupLink}\n\n` +
+              `Sampai jumpa di titik kumpul dan selamat ber-silent hiking!`
+            );
+
+            // URL wa.me dijamin menggunakan kode negara 62
+            const waUrl = `https://wa.me/${formattedPhone}?text=${waMessage}`;
+
+            return `
+              <tr class="border-b border-slate-700/50">
+                <td class="p-3 font-mono text-xs">${b.booking_code}</td>
+                <td class="p-3 font-medium">${b.full_name}</td>
+                <td class="p-3">${b.whatsapp_number}</td>
+                <td class="p-3">
+                  <span class="px-2 py-1 text-xs rounded-full ${
+                    b.payment_status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-300' :
+                    b.payment_status === 'REJECTED' ? 'bg-rose-500/20 text-rose-300' : 'bg-amber-500/20 text-amber-300'
+                  }">${b.payment_status}</span>
+                </td>
+                <td class="p-3">
+                  ${b.payment_proof ? `<a href="${b.payment_proof}" target="_blank" class="text-indigo-400 underline text-xs">Lihat Bukti</a>` : '-'}
+                </td>
+                <td class="p-3 flex items-center gap-2">
+                  <button onclick="approveAndContact('${b.id}', '${waUrl}')" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded text-xs font-medium">
+                    Approve
+                  </button>
+                  <button onclick="updateStatus(${b.id}, 'REJECTED')" class="bg-rose-600 hover:bg-rose-500 px-3 py-1 rounded text-xs font-medium">
+                    Reject
+                  </button>
+                  ${b.payment_status === 'APPROVED' ? `
+                    <a href="${waUrl}" target="_blank" class="bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30 px-2.5 py-1 rounded text-xs font-semibold flex items-center gap-1">
+                      💬 Chat WA
+                    </a>
+                  ` : ''}
+                </td>
+              </tr>
+            `;
+          }).join('');
+        } else {
+          tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500 text-xs">Belum ada peserta yang mendaftar di batch ini.</td></tr>';
+        }
+      } catch (err) {
+        console.error('Gagal memuat data peserta:', err);
+      }
+    }
+    // 5. APPROVE SEKALIGUS BUKA TAB WA
+    async function approveAndContact(bookingId, waUrl) {
+      await updateStatus(bookingId, 'APPROVED');
+      window.open(waUrl, '_blank');
+    }
+
+    // 6. UPDATE STATUS PEMBAYARAN PESERTA
+    async function updateStatus(id, status) {
+      try {
+        await fetch(`${API_BASE}/admin/bookings/${id}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ payment_status: status })
+        });
+        loadBookings();
+      } catch (err) {
+        alert('Gagal memperbarui status pembayaran.');
+      }
+    }
+
+    // 7. SIMPAN / UPDATE TRIP BARU
+    async function saveTrip(event) {
+      event.preventDefault();
+      const tripId = document.getElementById('tripId').value;
+      const isEdit = !!tripId;
+
+      const formData = new FormData();
+      formData.append('title', document.getElementById('tripTitle').value);
+      formData.append('location', document.getElementById('tripLocation').value);
+      formData.append('meeting_point', document.getElementById('tripMeetingPoint').value);
+      formData.append('event_date', document.getElementById('tripDate').value);
+      formData.append('price', document.getElementById('tripPrice').value);
+      formData.append('quota', document.getElementById('tripQuota').value);
+      formData.append('description', document.getElementById('tripDescription').value);
+      formData.append('wa_group_link', document.getElementById('tripWAGroup').value);
+
+      const thumbnailFile = document.getElementById('tripThumbnail').files[0];
+      if (thumbnailFile) {
+        formData.append('thumbnail', thumbnailFile);
+      }
+
+      const url = isEdit ? `${API_BASE}/admin/trips/${tripId}` : `${API_BASE}/admin/trips`;
+      const method = isEdit ? 'PUT' : 'POST';
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          alert(isEdit ? 'Detail trip berhasil diperbarui!' : 'Trip baru berhasil dibuat!');
+          resetTripForm();
+          loadTrips();
+        } else {
+          alert(result.message);
+        }
+      } catch (err) {
+        alert('Gagal menyimpan data trip.');
+      }
+    }
+
+    // 8. ISI FORM KETIKA MEMILIH EDIT
+    function editSelectedTrip() {
+      const tripId = document.getElementById('tripSelect').value;
+      const selected = allTrips.find(t => t.id == tripId);
+      if (!selected) return;
+
+      document.getElementById('tripId').value = selected.id;
+      document.getElementById('tripTitle').value = selected.title;
+      document.getElementById('tripLocation').value = selected.location || '';
+      document.getElementById('tripMeetingPoint').value = selected.meeting_point || '';
+      document.getElementById('tripDate').value = selected.event_date;
+      document.getElementById('tripPrice').value = selected.price;
+      document.getElementById('tripQuota').value = selected.quota;
+      document.getElementById('tripDescription').value = selected.description || '';
+      document.getElementById('tripWAGroup').value = selected.wa_group_link || '';
+
+      const notice = document.getElementById('currentImageNotice');
+      if (selected.image_url) {
+        notice.innerText = `Gambar saat ini: ${selected.image_url} (Biarkan kosong jika tidak ingin mengubah foto)`;
+        notice.classList.remove('hidden');
+      }
+
+      document.getElementById('formTitle').innerText = 'Edit Detail Trip: ' + selected.title;
+      document.getElementById('btnSaveTrip').innerText = 'Update Trip';
+      document.getElementById('btnResetForm').classList.remove('hidden');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetTripForm() {
+      document.getElementById('tripForm').reset();
+      document.getElementById('tripId').value = '';
+      document.getElementById('formTitle').innerText = 'Tambah Trip Hiking Baru';
+      document.getElementById('btnSaveTrip').innerText = 'Simpan Trip Baru';
+      document.getElementById('btnResetForm').classList.add('hidden');
+      document.getElementById('currentImageNotice').classList.add('hidden');
+    }
+
+    // 9. BUKA / TUTUP PENDAFTARAN
+    async function toggleTripStatus() {
+      const tripId = document.getElementById('tripSelect').value;
+      const selected = allTrips.find(t => t.id == tripId);
+      if (!selected) return;
+
+      const newStatus = selected.is_active ? 0 : 1;
+      try {
+        await fetch(`${API_BASE}/admin/trips/${tripId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ ...selected, is_active: newStatus })
+        });
+        loadTrips();
+      } catch (err) {
+        alert('Gagal mengubah status pendaftaran.');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('admin_token');
+      window.location.href = '/login';
+    }
+
+    // INISIALISASI
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTrips();
+      loadBankSettings();
+    });
+  </script>
+</body>
+</html>

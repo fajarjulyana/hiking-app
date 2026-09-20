@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Hiking Indonesia - Jelajah Singkat</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        forest: {
+                            50: '#f2f7f4', 100: '#e1ede6', 200: '#c5dcd0', 300: '#9cc2b1',
+                            400: '#6fa38d', 500: '#4e8671', 600: '#3c6c5a', 700: '#32574a',
+                            800: '#2b473e', 900: '#253c35', 950: '#11221e',
+                        },
+                        moss: '#8ba888', bark: '#2c221e', sand: '#e8e2ce',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        .glass { background: rgba(17, 34, 30, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #11221e; }
+        ::-webkit-scrollbar-thumb { background: #32574a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4e8671; }
+    </style>
+</head>
+<body class="bg-forest-950 text-slate-100 font-sans antialiased selection:bg-forest-500 selection:text-white min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-40 glass transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 flex items-center justify-center text-forest-300 group-hover:scale-105 transition-transform">
+                        <img src="/logo.png" alt="Logo Silent Hiking ID" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <span class="text-xs uppercase tracking-widest text-forest-300 font-semibold block">Jelajah Singkat</span>
+                        <span class="font-serif text-lg font-bold tracking-wide text-white">Silent Hiking ID</span>
+                    </div>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-8 text-sm text-forest-100/80 font-medium">
+                    <a href="#about" class="hover:text-forest-300 transition-colors">Tentang Program</a>
+                    <a href="#rules" class="hover:text-forest-300 transition-colors">Aturan Hening</a>
+                    <a href="#meditation" class="hover:text-forest-300 transition-colors">Simulasi Hening</a>
+                    <a href="#ticket" class="hover:text-forest-300 transition-colors">Niat & Tiket</a>
+                    <a href="#schedule" class="hover:text-forest-300 transition-colors">Jadwal & Biaya</a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button id="soundToggleBtn" onclick="toggleAmbienceModal()" class="flex items-center gap-2 bg-forest-900/80 hover:bg-forest-800 text-forest-200 border border-forest-700/50 px-3.5 py-2 rounded-full text-xs font-medium transition-all shadow-inner">
+                        <span class="relative flex h-2 w-2">
+                          <span id="soundDotPing" class="hidden animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span id="soundDot" class="relative inline-flex rounded-full h-2 w-2 bg-slate-500"></span>
+                        </span>
+                        <i data-lucide="volume-2" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline" id="soundBtnText">Suara Alam</span>
+                    </button>
+
+                    <a href="#schedule" class="bg-forest-500 hover:bg-forest-400 text-slate-950 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-full transition-all shadow-lg hover:shadow-forest-500/20 active:scale-95">
+                        Daftar Open Trip
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 md:pt-44 md:pb-32 overflow-hidden flex items-center justify-center min-h-[90vh]">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-forest-800/40 via-forest-950 to-forest-950 -z-10"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-forest-900/80 border border-forest-600/40 text-forest-300 text-xs tracking-wider uppercase font-semibold mb-6 animate-pulse-slow">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>Mindfulness & Digital Detox in West Java</span>
+            </div>
+
+            <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-slate-100 leading-[1.15] mb-6">
+                Langkahkan Kaki.<br/>
+                <span class="italic font-light text-forest-300">Henangkan Pikiran.</span>
+            </h1>
+
+            <p class="text-base sm:text-xl text-forest-100/80 max-w-2xl mx-auto font-light leading-relaxed mb-10">
+                Pengalaman berjalan menyusuri rimba raya tanpa suara gawai dan obrolan. Reconnect dengan alam, napas, dan kesadaran utuh di jalur tersembunyi Bandung & Lembang.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#meditation" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-7 py-3.5 rounded-full text-base transition-all shadow-xl hover:shadow-emerald-500/20">
+                    <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                    <span>Coba Simulasi Hening (1 Min)</span>
+                </a>
+                <a href="#about" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-forest-900/60 hover:bg-forest-800/80 text-forest-200 border border-forest-700/60 px-6 py-3.5 rounded-full text-base font-medium transition-all">
+                    <span>Pelajari Konsep</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 pt-10 border-t border-forest-800/60 text-left">
+                <div class="glass p-4 rounded-2xl">
+                    <p class="text-xs text-forest-300 uppercase tracking-wider font-semibold">Durasi Hiking</p>
+                    <p class="text-2xl font-bold text-white font-serif mt-1">2.5 - 3 Jam</p>
+                    <p class="text-xs text-slate-400 mt-1">Jalur Hening Santai</p>
+                </div>
+                <div class="glass p-4 rounded-2xl">
+                    <p class="text-xs text-forest-300 uppercase tracking-wider font-semibold">Tingkat Kesulitan</p>
+                    <p class="text-2xl font-bold text-white font-serif mt-1">Pemula (Easy)</p>
+                    <p class="text-xs text-slate-400 mt-1">Ramah Untuk Semua</p>
+                </div>
+                <div class="glass p-4 rounded-2xl">
+                    <p class="text-xs text-forest-300 uppercase tracking-wider font-semibold">Aturan Utama</p>
+                    <p class="text-2xl font-bold text-white font-serif mt-1">Zero Talk</p>
+                    <p class="text-xs text-slate-400 mt-1">Fokus Pada Langkah & Alam</p>
+                </div>
+                <div class="glass p-4 rounded-2xl">
+                    <p class="text-xs text-forest-300 uppercase tracking-wider font-semibold">Peserta / Batch</p>
+                    <p class="text-2xl font-bold text-white font-serif mt-1">Max 15 Orang</p>
+                    <p class="text-xs text-slate-400 mt-1">Intimate & Safe Space</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 relative border-t border-forest-900 bg-forest-950/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <div class="inline-flex items-center gap-2 text-forest-400 font-semibold text-sm tracking-wider uppercase">
+                        <i data-lucide="compass" class="w-4 h-4"></i>
+                        <span>Mengapa Silent Hiking?</span>
+                    </div>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white leading-tight">
+                        Menghentikan Hiruk Pikuk, Menyapa Kembali Diri Sendiri.
+                    </h2>
+                    <p class="text-forest-100/80 leading-relaxed font-light">
+                        Dalam kehidupan sehari-hari yang penuh dengan notifikasi, ekspektasi, dan riuh kata-kata, otak kita jarang beristirahat. **Silent Hiking Indonesia** diinisiasi oleh <span class="text-forest-300 font-medium">Jelajah Singkat</span> sebagai wadah untuk melakukan *reset* mental secara menyeluruh.
+                    </p>
+                </div>
+                <div class="lg:col-span-6">
+                    <div class="relative rounded-3xl overflow-hidden glass p-8 border border-forest-700/40 shadow-2xl">
+                        <h3 class="font-serif text-2xl font-bold text-forest-200 mb-4">Alur Kegiatan</h3>
+                        <div class="space-y-4 text-xs text-slate-300">
+                            <p><strong>1. Briefing & Niat:</strong> Kumpul di titik temu & penulisan niat perjalanan.</p>
+                            <p><strong>2. Silent Trekking:</strong> Berjalan tanpa suara dengan jarak 3-5 meter.</p>
+                            <p><strong>3. Forest Meditation:</strong> Duduk hening di tengah pepohonan & grounding.</p>
+                            <p><strong>4. Post-Hike Sharing:</strong> Melepas hening, teh hangat, & journaling.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guided Breath Simulator -->
+    <section id="meditation" class="py-20 relative overflow-hidden bg-forest-950 border-t border-forest-900">
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <span class="text-xs font-semibold text-forest-400 tracking-widest uppercase">Latihan Awal</span>
+            <h2 class="font-serif text-3xl font-bold text-white mt-2 mb-4">Simulasi Hening 1 Menit</h2>
+            <div class="glass max-w-lg mx-auto p-8 rounded-3xl border border-forest-700/50 shadow-2xl">
+                <div class="relative w-48 h-48 mx-auto flex items-center justify-center">
+                    <div id="breathRing" class="absolute inset-0 rounded-full bg-forest-500/20 border-2 border-forest-400/40 transition-all duration-1000 scale-90"></div>
+                    <div class="w-32 h-32 rounded-full bg-forest-800/80 border border-forest-500/60 flex flex-col items-center justify-center z-10 shadow-lg">
+                        <span id="breathTimer" class="text-3xl font-bold text-white font-serif">60s</span>
+                        <span id="breathText" class="text-xs font-medium text-forest-300 mt-1 uppercase">Siap?</span>
+                    </div>
+                </div>
+                <div class="mt-8 space-y-4">
+                    <p id="breathSubtext" class="text-sm text-slate-300 italic min-h-[2.5rem]">Tekan "Mulai Simulasi" untuk latihan napas 4-7-8.</p>
+                    <div class="flex justify-center gap-3">
+                        <button id="startBreathBtn" onclick="toggleBreathExercise()" class="bg-forest-500 hover:bg-forest-400 text-slate-950 font-semibold px-6 py-2.5 rounded-full text-sm">Mulai Simulasi</button>
+                        <button id="resetBreathBtn" onclick="resetBreathExercise()" class="hidden bg-forest-900 hover:bg-forest-800 text-forest-200 border border-forest-700 px-4 py-2.5 rounded-full text-sm">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intention Pass Section -->
+    <section id="ticket" class="py-20 border-t border-forest-900 bg-forest-900/20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <span class="text-xs font-semibold text-forest-400 tracking-widest uppercase">Persiapan Mental</span>
+                        <h2 class="font-serif text-3xl font-bold text-white mt-1">Tuliskan Niatmu (Intention)</h2>
+                    </div>
+                    <form id="intentionForm" class="space-y-4" onsubmit="event.preventDefault(); generateTicket();">
+                        <div>
+                            <label class="block text-xs font-medium text-forest-200 uppercase mb-2">Nama Panggilan</label>
+                            <input type="text" id="inputName" value="Sahabat Jelajah" class="w-full bg-forest-950 border border-forest-700 rounded-xl px-4 py-3 text-sm text-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-forest-200 uppercase mb-2">Niat / Harapan Hening</label>
+                            <textarea id="inputIntention" rows="3" class="w-full bg-forest-950 border border-forest-700 rounded-xl px-4 py-3 text-sm text-white" required>Melepas penat perkotaan, mengistirahatkan pikiran dari gawai, dan menikmati kesunyian alam.</textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold py-3 rounded-xl text-sm">Perbarui Pass Tiket Niat</button>
+                    </form>
+                </div>
+                <div class="lg:col-span-7">
+                    <div id="ticketCard" class="glass rounded-3xl p-6 sm:p-8 border border-forest-600/50 shadow-2xl">
+                        <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold block">Digital Intention Pass</span>
+                        <h3 class="font-serif text-2xl font-bold text-white mt-1">Silent Hiking ID</h3>
+                        <div class="py-6 space-y-4">
+                            <div>
+                                <span class="text-[10px] text-forest-300 uppercase block">Nama Peserta</span>
+                                <span id="ticketName" class="font-serif text-lg font-semibold text-white">Sahabat Jelajah</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-forest-300 uppercase block">Niat Perjalanan</span>
+                                <p id="ticketIntention" class="text-sm text-forest-100 italic bg-forest-950/60 p-3 rounded-xl border border-forest-800">"Melepas penat perkotaan, mengistirahatkan pikiran dari gawai, dan menikmati kesunyian alam."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Section (REAL-TIME FETCH FROM BACKEND SQLite) -->
+    <section id="schedule" class="py-20 bg-forest-950 border-t border-forest-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-xs font-semibold text-forest-400 tracking-widest uppercase">Pilihan Batch</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mt-2">Jadwal Open Trip Terdekat</h2>
+                <p class="text-slate-400 text-sm mt-2">Slot sangat terbatas (12 - 15 orang) untuk menjaga keheningan & kenyamanan grup.</p>
+            </div>
+
+            <!-- Container Dynamic Trips -->
+            <div id="tripContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="col-span-3 text-center py-10 text-slate-400">Memuat jadwal trip dari server...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-forest-950 border-t border-forest-900 py-12 text-forest-300 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-forest-800 border border-forest-600/40 flex items-center justify-center text-forest-300">
+                    <i data-lucide="trees" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-white">Silent Hiking Indonesia</p>
+                    <p class="text-[10px] text-slate-500">Initiated by Jelajah Singkat</p>
+                </div>
+            </div>
+            <p class="text-slate-500 text-center sm:text-right">&copy; 2026 Jelajah Singkat. Official Landing Experience.</p>
+        </div>
+    </footer>
+
+    <!-- Modal Form Pendaftaran -->
+    <div id="bookingModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+        <div class="glass max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-forest-700 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="font-serif text-2xl font-bold text-white mb-1" id="modalTripTitle">Form Pendaftaran</h3>
+            <p class="text-xs text-forest-300 mb-6" id="modalTripSub">Isi data diri Anda untuk mengamankan kuota.</p>
+
+            <form id="bookingForm" onsubmit="submitBooking(event)" class="space-y-4">
+                <input type="hidden" id="bookingTripId" />
+                <div>
+                    <label class="block text-xs font-medium text-forest-200 uppercase mb-1">Nama Lengkap</label>
+                    <input type="text" id="inputFullName" required placeholder="Sesuai KTP/Panggilan" class="w-full bg-forest-950 border border-forest-700 rounded-xl px-4 py-2.5 text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-forest-200 uppercase mb-1">Nomor WhatsApp</label>
+                    <input type="tel" id="inputPhone" required placeholder="08xxxxxxxxxx" class="w-full bg-forest-950 border border-forest-700 rounded-xl px-4 py-2.5 text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-forest-200 uppercase mb-1">Kontak Darurat</label>
+                    <input type="tel" id="inputEmergency" required placeholder="08xxxxxxxxxx" class="w-full bg-forest-950 border border-forest-700 rounded-xl px-4 py-2.5 text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-forest-200 uppercase mb-1">Catatan Kesehatan (Opsional)</label>
+                    <textarea id="inputHealth" rows="2" placeholder="Asma, riwayat cedera, dll." class="w-full bg-forest-950 border border-forest-700 rounded-xl px-4 py-2.5 text-sm text-white"></textarea>
+                </div>
+                <div class="flex items-start gap-2 pt-2">
+                    <input type="checkbox" id="chkTerms" required class="mt-1 accent-emerald-500 rounded">
+                    <label for="chkTerms" class="text-xs text-slate-300">Saya menyetujui Aturan Hening & syarat keselamatan.</label>
+                </div>
+                <button type="submit" id="btnSubmitBooking" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold py-3 rounded-xl text-sm transition-all mt-4">
+                    Kirim & Lanjutkan Pembayaran
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Upload Bukti Transfer -->
+    <div id="paymentModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+        <div class="glass max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-forest-700 shadow-2xl relative">
+            <h3 class="font-serif text-2xl font-bold text-white mb-2">Instruksi Pembayaran</h3>
+            <div class="p-4 bg-forest-900/60 rounded-2xl border border-forest-800 text-xs space-y-2 mb-6">
+                <p class="flex justify-between"><span>Kode Pendaftaran:</span> <strong id="payCode" class="text-emerald-400 font-mono">--</strong></p>
+                <p class="flex justify-between"><span>Total Biaya:</span> <strong id="payAmount" class="text-white font-bold">--</strong></p>
+                <p class="flex justify-between items-start gap-2">
+                    <span>Transfer Ke:</span> 
+                    <strong id="displayBankInfo" class="text-emerald-300 font-semibold text-right">Memuat rekening...</strong>
+                </p>
+            </div>
+            <form id="uploadProofForm" onsubmit="submitProof(event)" class="space-y-4">
+                <input type="hidden" id="uploadBookingCode" />
+                <div>
+                    <label class="block text-xs font-medium text-forest-200 uppercase mb-1">Unggah Foto Bukti Transfer</label>
+                    <input type="file" id="fileProof" accept="image/jpeg,image/png" required class="w-full text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-forest-700 file:text-white">
+                </div>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold py-3 rounded-xl text-sm">
+                    Kirim Bukti Pembayaran
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-forest-800 text-white text-xs font-medium px-4 py-3 rounded-2xl border border-forest-600 shadow-2xl transition-all duration-300 translate-y-20 opacity-0 z-50 flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toastMsg">Notifikasi</span>
+    </div>
+
+    <!-- AUDIO GENERATOR MODAL -->
+    <div id="ambienceModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+        <div class="glass max-w-md w-full p-6 sm:p-8 rounded-3xl border border-forest-700 shadow-2xl relative">
+            <button onclick="toggleAmbienceModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="font-serif text-lg font-bold text-white mb-4">Forest Soundscape Generator</h3>
+            <div class="space-y-4">
+                <button id="masterAudioToggle" onclick="toggleMasterAudio()" class="w-full py-2 bg-forest-700 text-xs font-medium text-white rounded-xl">Mulai Audio</button>
+                <div>
+                    <label class="text-xs text-slate-300 block mb-1">Hujan</label>
+                    <input type="range" id="rainVol" min="0" max="100" value="30" oninput="updateAudioVolumes()" class="w-full accent-emerald-500 bg-forest-900 h-2 rounded-lg">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-300 block mb-1">Angin</label>
+                    <input type="range" id="windVol" min="0" max="100" value="40" oninput="updateAudioVolumes()" class="w-full accent-emerald-500 bg-forest-900 h-2 rounded-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const API_BASE = window.location.origin.includes('localhost')
+            ? 'http://localhost:4008/api'
+            : `${window.location.origin}/api`;
+
+        // 1. FETCH REKENING DINAMIS DARI DATABASE
+        async function loadBankInfoToModal() {
+            try {
+                const res = await fetch(`${API_BASE}/settings/bank`);
+                const { success, data } = await res.json();
+                const bankDisplay = document.getElementById('displayBankInfo');
+                if (success && data && bankDisplay) {
+                    const bankName = data.bank_name || 'BCA';
+                    const accountNumber = data.account_number || '1234567890';
+                    const accountHolder = data.account_holder || 'Silent Hiking Indonesia';
+                    
+                    bankDisplay.innerText = `${bankName} ${accountNumber} a.n ${accountHolder}`;
+                }
+            } catch (err) {
+                console.error('Gagal memuat data rekening:', err);
+                const bankDisplay = document.getElementById('displayBankInfo');
+                if (bankDisplay) {
+                    bankDisplay.innerText = 'BCA 1234567890 a.n Silent Hiking';
+                }
+            }
+        }
+
+        // 2. FETCH TRIPS REALTIME
+        async function loadActiveTrips() {
+            try {
+                const res = await fetch(`${API_BASE}/trips`);
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP Error status: ${res.status}`);
+                }
+
+                const { success, data } = await res.json();
+                const container = document.getElementById('tripContainer');
+
+                if (success && data && data.length > 0) {
+                    container.innerHTML = data.map(trip => {
+                        const isFull = trip.remaining_quota <= 0;
+                        
+                        let thumbnailSrc = trip.image_url || '/uploads/default-hiking.jpg';
+                        if (thumbnailSrc.startsWith('/uploads')) {
+                            thumbnailSrc = `${API_BASE.replace('/api', '')}${thumbnailSrc}`;
+                        }
+
+                        return `
+                            <div class="glass rounded-2xl overflow-hidden border border-forest-700/60 flex flex-col justify-between hover:border-emerald-500/50 transition-all">
+                                
+                                <!-- Thumbnail Image Header -->
+                                <div class="relative h-48 w-full overflow-hidden bg-forest-900">
+                                    <img 
+                                        src="${thumbnailSrc}" 
+                                        alt="${trip.title}" 
+                                        class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=600&q=80';"
+                                    />
+                                    <div class="absolute top-3 left-3">
+                                        <span class="px-2.5 py-1 ${isFull ? 'bg-rose-500/80 text-rose-100' : 'bg-emerald-500/80 text-emerald-950'} backdrop-blur-md text-xs font-bold rounded-full border border-white/20">
+                                            ${isFull ? 'Kuota Penuh' : `Sisa ${trip.remaining_quota} Slot`}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Content Info -->
+                                <div class="p-6 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+                                            <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5 text-forest-300"></i> ${trip.event_date}</span>
+                                        </div>
+                                        <h3 class="font-serif text-xl font-bold text-white mb-2">${trip.title}</h3>
+                                        
+                                        <p class="text-xs text-forest-300 flex items-center gap-1.5 mb-1">
+                                            <i data-lucide="trees" class="w-3.5 h-3.5 shrink-0"></i> Tujuan: <strong class="text-slate-200">${trip.location}</strong>
+                                        </p>
+                                        <p class="text-xs text-amber-300/90 flex items-center gap-1.5 mb-3">
+                                            <i data-lucide="map-pin" class="w-3.5 h-3.5 shrink-0"></i> Mepo: <strong class="text-slate-200">${trip.meeting_point || '-'}</strong>
+                                        </p>
+                                        
+                                        <p class="text-xs text-slate-300/80 line-clamp-2 leading-relaxed mb-4">${trip.description || ''}</p>
+                                    </div>
+
+                                    <!-- Price & CTA -->
+                                    <div class="pt-4 border-t border-forest-800 flex items-center justify-between mt-2">
+                                        <div>
+                                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Investasi Diri</span>
+                                            <span class="text-lg font-bold text-emerald-400 font-serif">Rp ${(trip.price || 0).toLocaleString('id-ID')}</span>
+                                        </div>
+                                        <button 
+                                            onclick="openBookingModal(${trip.id}, '${trip.title}', ${trip.price})" 
+                                            ${isFull ? 'disabled class="opacity-50 cursor-not-allowed bg-slate-700 text-slate-400 px-4 py-2 rounded-xl text-xs font-semibold"' : 'class="bg-forest-500 hover:bg-forest-400 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs transition-colors"'}
+                                        >
+                                            ${isFull ? 'Penuh' : 'Pesan Slot'}
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    lucide.createIcons();
+                } else {
+                    const container = document.getElementById('tripContainer');
+                    if (container) {
+                        container.innerHTML = `<div class="col-span-3 text-center py-10 text-slate-400">Belum ada jadwal trip aktif saat ini.</div>`;
+                    }
+                }
+            } catch (err) {
+                console.error('Gagal memuat trip:', err);
+                const container = document.getElementById('tripContainer');
+                if (container) {
+                    container.innerHTML = `<div class="col-span-3 text-center py-10 text-rose-400">Gagal terhubung ke server. Silakan muat ulang halaman.</div>`;
+                }
+            }
+        }
+
+        // 3. MODAL BOOKING
+        function openBookingModal(tripId, title, price) {
+            document.getElementById('bookingTripId').value = tripId;
+            document.getElementById('modalTripTitle').innerText = title;
+            document.getElementById('modalTripSub').innerText = `Investasi Diri: Rp ${price.toLocaleString('id-ID')}`;
+            document.getElementById('bookingModal').classList.remove('hidden');
+            document.getElementById('bookingModal').classList.add('flex');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+            document.getElementById('bookingModal').classList.remove('flex');
+        }
+
+        async function submitBooking(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnSubmitBooking');
+            btn.disabled = true;
+
+            const payload = {
+                trip_id: parseInt(document.getElementById('bookingTripId').value),
+                full_name: document.getElementById('inputFullName').value,
+                whatsapp_number: document.getElementById('inputPhone').value,
+                emergency_contact: document.getElementById('inputEmergency').value,
+                health_notes: document.getElementById('inputHealth').value,
+                agreed_terms: document.getElementById('chkTerms').checked ? 1 : 0
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/bookings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    closeBookingModal();
+                    document.getElementById('payCode').innerText = result.data.booking_code;
+                    document.getElementById('payAmount').innerText = `Rp ${result.data.price.toLocaleString('id-ID')}`;
+                    document.getElementById('uploadBookingCode').value = result.data.booking_code;
+                    
+                    // Muat informasi rekening terbaru ke modal
+                    await loadBankInfoToModal();
+                    
+                    document.getElementById('paymentModal').classList.remove('hidden');
+                    document.getElementById('paymentModal').classList.add('flex');
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                alert('Gagal mengirim data pendaftaran.');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function submitProof(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('booking_code', document.getElementById('uploadBookingCode').value);
+            formData.append('payment_proof', document.getElementById('fileProof').files[0]);
+
+            try {
+                const res = await fetch(`${API_BASE}/bookings/upload-proof`, { method: 'POST', body: formData });
+                const result = await res.json();
+                if (result.success) {
+                    alert('Bukti bayar terkirim! Admin akan memverifikasi pendaftaran Anda.');
+                    document.getElementById('paymentModal').classList.add('hidden');
+                    loadActiveTrips();
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                alert('Gagal mengunggah gambar.');
+            }
+        }
+
+        // 4. BREATH EXERCISE & UTILS
+        let breathInterval = null, breathTimeLeft = 60, isBreathing = false;
+        function toggleBreathExercise() {
+            if (isBreathing) {
+                clearInterval(breathInterval); isBreathing = false;
+                document.getElementById('startBreathBtn').innerText = "Lanjutkan";
+            } else {
+                isBreathing = true;
+                document.getElementById('startBreathBtn').innerText = "Jeda";
+                document.getElementById('resetBreathBtn').classList.remove('hidden');
+                breathInterval = setInterval(() => {
+                    breathTimeLeft--;
+                    document.getElementById('breathTimer').innerText = breathTimeLeft + "s";
+                    if (breathTimeLeft <= 0) {
+                        clearInterval(breathInterval);
+                        document.getElementById('breathTimer').innerText = "Selesai";
+                        if (typeof confetti === 'function') confetti();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetBreathExercise() {
+            clearInterval(breathInterval); isBreathing = false; breathTimeLeft = 60;
+            document.getElementById('breathTimer').innerText = "60s";
+            document.getElementById('startBreathBtn').innerText = "Mulai Simulasi";
+            document.getElementById('resetBreathBtn').classList.add('hidden');
+        }
+
+        function generateTicket() {
+            document.getElementById('ticketName').innerText = document.getElementById('inputName').value;
+            document.getElementById('ticketIntention').innerText = `"${document.getElementById('inputIntention').value}"`;
+            showToast("Niat & Tiket berhasil diperbarui!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        function toggleAmbienceModal() {
+            document.getElementById('ambienceModal').classList.toggle('hidden');
+            document.getElementById('ambienceModal').classList.toggle('flex');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadActiveTrips();
+            loadBankInfoToModal();
+        });
+    </script>
+</body>
+</html>
